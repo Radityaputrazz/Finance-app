@@ -1,0 +1,1 @@
+export type { WalletWithCounts } from "@/lib/db/types";
