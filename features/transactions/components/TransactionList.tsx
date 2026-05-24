@@ -10,7 +10,6 @@ import { Badge, EmptyState } from "@/components/ui";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { showToast } from "@/lib/utils/toast";
-import { isActionError } from "@/lib/utils/action";
 
 interface TransactionListProps {
   transactions: TransactionWithRelations[];
@@ -46,7 +45,7 @@ export function TransactionList({ transactions, categories, wallets }: Transacti
     if (!confirm("Yakin ingin menghapus transaksi ini?")) return;
     setDeletingId(id);
     const result = await deleteTransactionAction(id);
-    if (result?.error) showToast.error(result.error);
+    if (!result.success) showToast.error(result.error ?? "Terjadi kesalahan");
     else showToast.deleted("Transaksi");
     setDeletingId(null);
   };
@@ -62,7 +61,7 @@ export function TransactionList({ transactions, categories, wallets }: Transacti
             placeholder="Cari transaksi..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-400"
+            className="w-full pl-9 pr-4 py-2.5 border border-gray-200 dark:border-slate-600 dark:bg-slate-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-400"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -75,7 +74,7 @@ export function TransactionList({ transactions, categories, wallets }: Transacti
                 "px-3 py-2 rounded-xl text-xs font-medium transition-all whitespace-nowrap",
                 typeFilter === f
                   ? "bg-emerald-500 text-white"
-                  : "bg-white border border-gray-200 text-gray-500 hover:bg-gray-50"
+                  : "bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 text-gray-500 hover:bg-gray-50"
               )}
             >
               {f === "ALL" ? "Semua" : TYPE_LABELS[f]}
@@ -84,7 +83,6 @@ export function TransactionList({ transactions, categories, wallets }: Transacti
         </div>
       </div>
 
-      {/* List */}
       {filtered.length === 0 ? (
         <EmptyState
           icon="🔍"
@@ -92,51 +90,47 @@ export function TransactionList({ transactions, categories, wallets }: Transacti
           description="Coba ubah filter atau tambah transaksi baru."
         />
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50 overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm divide-y divide-gray-50 dark:divide-slate-700 overflow-hidden">
           {filtered.map((tx) => (
             <div
               key={tx.id}
               className={cn(
-                "flex items-center gap-3 px-4 sm:px-5 py-4 group hover:bg-gray-50/50 transition-colors",
-                deletingId === tx.id && "opacity-50"
+                "flex items-center gap-3 px-4 sm:px-5 py-4 group hover:bg-gray-50/50 dark:hover:bg-slate-700/50 transition-colors",
+                deletingId === tx.id && "opacity-40"
               )}
             >
-              {/* Category icon */}
-              <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-xl shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-slate-700 flex items-center justify-center text-xl shrink-0">
                 {tx.category.icon}
               </div>
-
-              {/* Info */}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-800 truncate">{tx.description}</p>
+                <p className="text-sm font-medium text-gray-800 dark:text-slate-100 truncate">{tx.description}</p>
                 <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
                   <span className="text-xs text-gray-400">{formatDate(tx.date)}</span>
-                  <span className="text-gray-200">·</span>
+                  <span className="text-gray-200 dark:text-slate-600">·</span>
                   <Badge variant={TYPE_COLORS[tx.type]}>{tx.category.name}</Badge>
-                  <span className="text-gray-200 hidden sm:inline">·</span>
+                  <span className="text-gray-200 dark:text-slate-600 hidden sm:inline">·</span>
                   <span className="hidden sm:inline text-xs text-gray-400">{tx.wallet.icon} {tx.wallet.name}</span>
                 </div>
                 {tx.note && <p className="text-xs text-gray-400 mt-0.5 truncate">{tx.note}</p>}
               </div>
-
-              {/* Amount + actions */}
               <div className="flex items-center gap-2 shrink-0">
                 <p className={cn(
                   "text-sm font-bold",
                   tx.type === "INCOME" ? "text-emerald-600" : tx.type === "EXPENSE" ? "text-red-500" : "text-blue-500"
                 )}>
-                  {tx.type === "INCOME" ? "+" : tx.type === "EXPENSE" ? "-" : "↔"}{formatCurrency(tx.amount.toString())}
+                  {tx.type === "INCOME" ? "+" : tx.type === "EXPENSE" ? "-" : "↔"}
+                  {formatCurrency(tx.amount as unknown as number)}
                 </p>
                 <div className="hidden group-hover:flex items-center gap-1">
                   <button
                     onClick={() => setEditTx(tx)}
-                    className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                    className="p-1.5 hover:bg-gray-100 dark:hover:bg-slate-600 rounded-lg transition-colors"
                   >
                     <Pencil className="w-3.5 h-3.5 text-gray-500" />
                   </button>
                   <button
                     onClick={() => handleDelete(tx.id)}
-                    className="p-1.5 hover:bg-red-50 rounded-lg transition-colors"
+                    className="p-1.5 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
                   >
                     <Trash2 className="w-3.5 h-3.5 text-red-400" />
                   </button>
@@ -147,7 +141,6 @@ export function TransactionList({ transactions, categories, wallets }: Transacti
         </div>
       )}
 
-      {/* Edit modal */}
       {editTx && (
         <TransactionForm
           open={!!editTx}
