@@ -7,6 +7,7 @@ import Link from "next/link";
 import { UserPlus } from "lucide-react";
 import { registerSchema, type RegisterInput } from "@/features/auth/schemas";
 import { registerAction } from "@/features/auth/actions";
+import { getActionError } from "@/lib/utils/action";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { FormField } from "@/components/ui/FormField";
@@ -25,7 +26,7 @@ export function RegisterForm() {
   const onSubmit = async (data: RegisterInput) => {
     setServerError("");
     const result = await registerAction(data);
-    if (result?.error) setServerError(result.error);
+    const err = getActionError(result); if (err) setServerError(err);
   };
 
   return (
