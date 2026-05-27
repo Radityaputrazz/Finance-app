@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type { RateLimitResult } from "./ratelimit";
 
 export function successResponse<T>(data: T, status = 200) {
   return NextResponse.json({ data }, { status });
@@ -19,4 +20,19 @@ export function notFoundResponse(resource = "Resource") {
 export function serverErrorResponse(error?: unknown) {
   console.error("[API Error]", error);
   return errorResponse("Terjadi kesalahan server", 500);
+}
+
+export function rateLimitResponse(result: RateLimitResult) {
+  return NextResponse.json(
+    { error: "Terlalu banyak permintaan. Coba lagi dalam beberapa saat." },
+    {
+      status: 429,
+      headers: {
+        "X-RateLimit-Limit": String(result.limit),
+        "X-RateLimit-Remaining": String(result.remaining),
+        "X-RateLimit-Reset": String(result.reset),
+        "Retry-After": String(Math.ceil((result.reset - Date.now()) / 1000)),
+      },
+    }
+  );
 }

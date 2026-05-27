@@ -15,9 +15,9 @@ import {
   parseOptionalString,
   parseOptionalDate,
 } from "@/lib/api/helpers";
+import { withRateLimit } from "@/lib/api/withRateLimit";
 
-// GET /api/transactions
-export async function GET(req: NextRequest) {
+async function getHandler(req: NextRequest) {
   const user = await requireAuth().catch(() => null);
   if (!user) return unauthorizedResponse();
 
@@ -79,7 +79,7 @@ export async function GET(req: NextRequest) {
 }
 
 // POST /api/transactions
-export async function POST(req: NextRequest) {
+async function postHandler(req: NextRequest) {
   const user = await requireAuth().catch(() => null);
   if (!user) return unauthorizedResponse();
 
@@ -134,3 +134,7 @@ export async function POST(req: NextRequest) {
     return serverErrorResponse(error);
   }
 }
+
+// Export with rate limiting
+export const GET = withRateLimit(getHandler, "api");
+export const POST = withRateLimit(postHandler, "write");
