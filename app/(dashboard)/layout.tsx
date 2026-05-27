@@ -3,6 +3,7 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { GlobalSearchWrapper } from "@/components/shared/GlobalSearchWrapper";
+import { SentryUserProvider } from "@/components/shared/SentryUserProvider";
 import { Suspense } from "react";
 
 export default async function DashboardLayout({
@@ -39,6 +40,9 @@ export default async function DashboardLayout({
 
       {/* Mobile bottom navigation */}
       <BottomNav />
+
+      {/* Sentry user context */}
+      <SentryUserProvider user={user} />
     </div>
   );
 }

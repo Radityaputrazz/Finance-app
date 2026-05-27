@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { RateLimitResult } from "./ratelimit";
+import { captureError } from "./sentry";
 
 export function successResponse<T>(data: T, status = 200) {
   return NextResponse.json({ data }, { status });
@@ -19,6 +20,7 @@ export function notFoundResponse(resource = "Resource") {
 
 export function serverErrorResponse(error?: unknown) {
   console.error("[API Error]", error);
+  captureError(error, { source: "api_route" });
   return errorResponse("Terjadi kesalahan server", 500);
 }
 
