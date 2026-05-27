@@ -13,10 +13,6 @@
   --input-border: #e5e7eb;
   --primary: #10b981;
   --primary-hover: #059669;
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 .dark {
@@ -32,6 +28,9 @@
   --input-border: #475569;
   --primary: #10b981;
   --primary-hover: #34d399;
+}
+
+@theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -42,4 +41,44 @@ body {
   background-color: var(--background);
   color: var(--foreground);
   transition: background-color 0.2s, color 0.2s;
+}
+
+/* Safe area for mobile notch/home bar */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ─── Print styles ─────────────────────────────────────────────────────────── */
+@media print {
+  /* Hide non-essential UI */
+  nav, header, aside, .no-print, button {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 12pt;
+  }
+
+  .print-container {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Page breaks */
+  .print-break-before {
+    break-before: page;
+  }
+
+  .print-break-avoid {
+    break-inside: avoid;
+  }
+
+  /* Force colors for charts */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 }

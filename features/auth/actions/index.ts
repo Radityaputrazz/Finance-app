@@ -68,7 +68,7 @@ export async function registerAction(data: RegisterInput): Promise<ActionResult>
   await signIn("credentials", {
     email: parsed.data.email,
     password: parsed.data.password,
-    redirectTo: "/dashboard",
+    redirectTo: "/onboarding",
   });
 
   return { success: true };

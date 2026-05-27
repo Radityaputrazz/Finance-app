@@ -15,6 +15,7 @@ import { CategoryBreakdown } from "@/features/reports/components/CategoryBreakdo
 import { DailySpendChart } from "@/features/reports/components/DailySpendChart";
 import { Card } from "@/components/ui";
 import { ExportButton } from "@/features/reports/components/ExportButton";
+import { PrintButton } from "@/features/reports/components/PrintButton";
 import { formatCurrency, parseDecimal } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
@@ -51,7 +52,7 @@ export function ReportsClient({ transactions }: ReportsClientProps) {
   const savingsRate = monthIncome > 0 ? ((monthIncome - monthExpense) / monthIncome) * 100 : 0;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 print-container">
       {/* Header with month navigator */}
       <div className="flex items-center justify-between">
         <div>
@@ -59,6 +60,7 @@ export function ReportsClient({ transactions }: ReportsClientProps) {
           <p className="text-sm text-gray-500 mt-0.5">Analisis keuangan Anda</p>
         </div>
         <div className="flex items-center gap-2">
+          <PrintButton />
           <ExportButton transactions={monthTxs} selectedDate={selectedDate} />
           <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-xl p-1 shadow-sm">
           <button

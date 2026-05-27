@@ -1,6 +1,9 @@
 import { requireAuth } from "@/lib/auth/session";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
+import { BottomNav } from "@/components/layout/BottomNav";
+import { GlobalSearchWrapper } from "@/components/shared/GlobalSearchWrapper";
+import { Suspense } from "react";
 
 export default async function DashboardLayout({
   children,
@@ -18,13 +21,24 @@ export default async function DashboardLayout({
 
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <Header title="" user={user} />
+        <Header
+          title=""
+          user={user}
+          action={
+            <Suspense fallback={null}>
+              <GlobalSearchWrapper />
+            </Suspense>
+          }
+        />
         <main className="flex-1 overflow-y-auto">
-          <div className="container max-w-6xl mx-auto px-4 md:px-6 py-6">
+          <div className="container max-w-6xl mx-auto px-4 md:px-6 py-6 pb-24 md:pb-6">
             {children}
           </div>
         </main>
       </div>
+
+      {/* Mobile bottom navigation */}
+      <BottomNav />
     </div>
   );
 }
