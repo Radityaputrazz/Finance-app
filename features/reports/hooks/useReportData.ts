@@ -68,18 +68,20 @@ export function buildCategoryReport(
   const map = new Map<string, CategoryReport>();
 
   filtered.forEach((t) => {
-    const existing = map.get(t.categoryId) ?? {
-      categoryId: t.categoryId,
-      name: t.category.name,
-      icon: t.category.icon,
-      color: t.category.color,
+    if (!t.category || !t.categoryId) return;
+    const catId = t.categoryId as string;
+    const existing = map.get(catId) ?? {
+      categoryId: catId,
+      name: t.category?.name ?? "Transfer",
+      icon: t.category?.icon ?? "↔",
+      color: t.category?.color ?? "#64748b",
       amount: 0,
       count: 0,
       percentage: 0,
     };
     existing.amount += parseDecimal(t.amount);
     existing.count += 1;
-    map.set(t.categoryId, existing);
+    map.set(catId, existing);
   });
 
   return Array.from(map.values())

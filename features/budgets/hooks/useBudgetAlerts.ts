@@ -19,7 +19,7 @@ export function useBudgetAlerts(budgets: BudgetWithRelations[]) {
       notifiedRef.current.add(`over-${b.id}`);
 
       toast.error(
-        `Anggaran "${b.category.name}" melebihi batas!`,
+        `Anggaran "${b.category?.name ?? ""}" melebihi batas!`,
         {
           description: `Terpakai ${formatCurrency(b.spent)} dari limit ${formatCurrency(b.amount.toString())}`,
           duration: 6000,
@@ -33,7 +33,7 @@ export function useBudgetAlerts(budgets: BudgetWithRelations[]) {
       notifiedRef.current.add(`near-${b.id}`);
 
       toast.warning(
-        `Anggaran "${b.category.name}" hampir habis`,
+        `Anggaran "${b.category?.name ?? ""}" hampir habis`,
         {
           description: `${b.percentage.toFixed(0)}% terpakai — sisa ${formatCurrency(b.remaining)}`,
           duration: 5000,

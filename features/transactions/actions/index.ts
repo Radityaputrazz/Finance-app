@@ -18,19 +18,20 @@ export async function createTransactionAction(data: TransactionInput): Promise<A
 
   try {
     await prisma.$transaction(async (tx) => {
-      await tx.transaction.create({
-        data: {
-          amount,
-          type,
-          description,
-          note,
-          date: new Date(date),
-          userId: user.id,
-          categoryId,
-          walletId,
-          toWalletId: type === "TRANSFER" ? toWalletId : null,
-        },
-      });
+      const createData: any = {
+        amount,
+        type,
+        description,
+        note,
+        date: new Date(date),
+        userId: user.id,
+        walletId,
+        toWalletId: type === "TRANSFER" ? toWalletId : null,
+      };
+      if (type !== "TRANSFER" && categoryId) {
+        createData.categoryId = categoryId;
+      }
+      await tx.transaction.create({ data: createData });
 
       // Update wallet balance
       if (type === "INCOME") {
@@ -94,10 +95,14 @@ export async function updateTransactionAction(id: string, data: TransactionInput
       const { amount, type, description, note, date, categoryId, walletId, toWalletId } = parsed.data;
 
       // Update transaction
-      await tx.transaction.update({
-        where: { id },
-        data: { amount, type, description, note, date: new Date(date), categoryId, walletId, toWalletId: type === "TRANSFER" ? toWalletId : null },
-      });
+      const updateData: any = {
+        amount, type, description, note,
+        date: new Date(date),
+        walletId,
+        toWalletId: type === "TRANSFER" ? toWalletId : null,
+        categoryId: type === "TRANSFER" ? null : categoryId,
+      };
+      await tx.transaction.update({ where: { id }, data: updateData });
 
       // Apply new balance
       if (type === "INCOME") {

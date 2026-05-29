@@ -10,6 +10,7 @@ import { Card } from "@/components/ui";
 import { formatCurrency, formatDate, parseDecimal } from "@/lib/utils";
 import { startOfMonth, endOfMonth, subMonths, format } from "date-fns";
 import { getUserBudgets } from "@/lib/db/queries";
+import { serializeDecimal } from "@/lib/utils/serialize";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -63,8 +64,9 @@ export default async function DashboardPage() {
       .filter((t) => t.type === "EXPENSE")
       .reduce<Record<string, { name: string; value: number; color: string; icon: string }>>(
         (acc, t) => {
-          const id = t.categoryId;
-          acc[id] = acc[id] ?? { name: t.category.name, value: 0, color: t.category.color, icon: t.category.icon };
+          if (!t.category || !t.categoryId) return acc;
+          const id = t.categoryId as string;
+          acc[id] = acc[id] ?? { name: t.category?.name ?? "Transfer", value: 0, color: t.category?.color ?? "#64748b", icon: t.category?.icon ?? "↔" };
           acc[id].value += parseDecimal(t.amount);
           return acc;
         },
@@ -76,7 +78,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <DashboardBudgetAlerts budgets={budgets} />
+      <DashboardBudgetAlerts budgets={serializeDecimal(budgets)} />
       {/* Page heading */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
@@ -141,7 +143,7 @@ export default async function DashboardPage() {
             {recentTransactions.map((tx) => (
               <div key={tx.id} className="flex items-center gap-3 px-6 py-3">
                 <div className="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center text-lg shrink-0">
-                  {tx.category.icon}
+                  {tx.category?.icon ?? "↔"}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-800 truncate">{tx.description}</p>

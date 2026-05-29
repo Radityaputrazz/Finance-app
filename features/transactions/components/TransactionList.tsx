@@ -100,14 +100,14 @@ export function TransactionList({ transactions, categories, wallets }: Transacti
               )}
             >
               <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-slate-700 flex items-center justify-center text-xl shrink-0">
-                {tx.category.icon}
+                {tx.category?.icon ?? "↔"}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-800 dark:text-slate-100 truncate">{tx.description}</p>
                 <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
                   <span className="text-xs text-gray-400">{formatDate(tx.date)}</span>
                   <span className="text-gray-200 dark:text-slate-600">·</span>
-                  <Badge variant={TYPE_COLORS[tx.type]}>{tx.category.name}</Badge>
+                  <Badge variant={TYPE_COLORS[tx.type]}>{tx.category?.name ?? "Transfer"}</Badge>
                   <span className="text-gray-200 dark:text-slate-600 hidden sm:inline">·</span>
                   <span className="hidden sm:inline text-xs text-gray-400">{tx.wallet.icon} {tx.wallet.name}</span>
                 </div>
@@ -153,3 +153,4 @@ export function TransactionList({ transactions, categories, wallets }: Transacti
     </>
   );
 }
+

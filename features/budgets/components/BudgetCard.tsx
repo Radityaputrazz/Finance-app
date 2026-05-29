@@ -17,7 +17,7 @@ export function BudgetCard({ budget }: BudgetCardProps) {
   const [deleting, setDeleting] = useState(false);
 
   const handleDelete = async () => {
-    if (!confirm(`Hapus anggaran "${budget.category.name}"?`)) return;
+    if (!confirm(`Hapus anggaran "${budget.category?.name ?? ""}"?`)) return;
     setDeleting(true);
     const result = await deleteBudgetAction(budget.id);
     if (result?.error) {
@@ -54,12 +54,12 @@ export function BudgetCard({ budget }: BudgetCardProps) {
         <div className="flex items-center gap-3">
           <div
             className="w-11 h-11 rounded-xl flex items-center justify-center text-2xl shrink-0"
-            style={{ background: `${budget.category.color}18` }}
+            style={{ background: `${budget.category?.color ?? "#64748b"}18` }}
           >
-            {budget.category.icon}
+            {budget.category?.icon ?? "📦"}
           </div>
           <div>
-            <p className="text-sm font-semibold text-gray-800">{budget.category.name}</p>
+            <p className="text-sm font-semibold text-gray-800">{budget.category?.name ?? ""}</p>
             <p className="text-xs text-gray-400 mt-0.5">
               {formatDate(budget.startDate)} – {formatDate(budget.endDate)}
             </p>

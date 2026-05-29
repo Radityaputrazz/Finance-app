@@ -69,7 +69,7 @@ export function ReportsClient({ transactions }: ReportsClientProps) {
           >
             <ChevronLeft className="w-4 h-4 text-gray-500" />
           </button>
-          <span className="text-sm font-medium text-gray-700 px-2 min-w-[120px] text-center">
+          <span className="text-sm font-medium text-gray-700 px-2 min-w-30 text-center">
             {monthLabel}
           </span>
           <button
@@ -145,12 +145,12 @@ export function ReportsClient({ transactions }: ReportsClientProps) {
                     <td className="py-2.5 text-xs text-gray-400">
                       {format(new Date(tx.date), "d MMM")}
                     </td>
-                    <td className="py-2.5 text-gray-700 max-w-[180px] truncate pr-4">
+                    <td className="py-2.5 text-gray-700 max-w-45 truncate pr-4">
                       {tx.description}
                     </td>
                     <td className="py-2.5 hidden sm:table-cell">
                       <span className="text-xs bg-gray-50 border border-gray-100 rounded-full px-2 py-0.5 text-gray-500">
-                        {tx.category.icon} {tx.category.name}
+                        {tx.category?.icon ?? "↔"} {tx.category?.name ?? "Transfer"}
                       </span>
                     </td>
                     <td className={cn(

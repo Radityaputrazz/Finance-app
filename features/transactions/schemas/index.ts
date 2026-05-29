@@ -6,10 +6,16 @@ export const transactionSchema = z.object({
   description: z.string().min(1, "Deskripsi wajib diisi").max(200),
   note: z.string().max(500).optional(),
   date: z.string().min(1, "Tanggal wajib diisi"),
-  categoryId: z.string().min(1, "Kategori wajib dipilih"),
+  categoryId: z.string().optional(),
   walletId: z.string().min(1, "Dompet wajib dipilih"),
   toWalletId: z.string().optional(),
-});
+}).refine(
+  (data) => data.type !== "TRANSFER" || !!data.toWalletId,
+  { message: "Dompet tujuan wajib dipilih untuk transfer", path: ["toWalletId"] }
+).refine(
+  (data) => data.type === "TRANSFER" || !!data.categoryId,
+  { message: "Kategori wajib dipilih", path: ["categoryId"] }
+);
 
 export const transactionFilterSchema = z.object({
   type: z.enum(["INCOME", "EXPENSE", "TRANSFER", "ALL"]).optional(),
@@ -29,7 +35,7 @@ export type TransactionInput = {
   description: string;
   note?: string;
   date: string;
-  categoryId: string;
+  categoryId?: string;
   walletId: string;
   toWalletId?: string;
 };

@@ -55,7 +55,7 @@ export function TransactionForm({ open, onClose, categories, wallets, transactio
         description: transaction.description,
         note: transaction.note ?? "",
         date: toISODate(new Date(transaction.date)),
-        categoryId: transaction.categoryId,
+        categoryId: transaction.categoryId ?? undefined,
         walletId: transaction.walletId,
         toWalletId: transaction.toWalletId ?? undefined,
       });
@@ -80,8 +80,8 @@ export function TransactionForm({ open, onClose, categories, wallets, transactio
       showToast.success(isEdit ? "Transaksi berhasil diperbarui" : "Transaksi berhasil ditambahkan");
       onClose();
     } else {
-      setServerError(result.error);
-      showToast.error(result.error);
+      setServerError(result.error ?? "Terjadi kesalahan");
+      showToast.error(result.error ?? "Terjadi kesalahan");
     }
   };
 
@@ -124,19 +124,21 @@ export function TransactionForm({ open, onClose, categories, wallets, transactio
           />
         </FormField>
 
-        <div className="grid grid-cols-2 gap-3">
-          <FormField label="Kategori" error={errors.categoryId?.message}>
-            <select
-              {...register("categoryId")}
-              className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-400 bg-white"
-            >
-              {filteredCategories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.icon} {c.name}
-                </option>
-              ))}
-            </select>
-          </FormField>
+        <div className={type === "TRANSFER" ? "" : "grid grid-cols-2 gap-3"}>
+          {type !== "TRANSFER" && (
+            <FormField label="Kategori" error={errors.categoryId?.message}>
+              <select
+                {...register("categoryId")}
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-400 bg-white"
+              >
+                {filteredCategories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.icon} {c.name}
+                  </option>
+                ))}
+              </select>
+            </FormField>
+          )}
 
           <FormField label="Dompet" error={errors.walletId?.message}>
             <select

@@ -154,7 +154,7 @@ export function InfiniteTransactionList({ categories, wallets }: InfiniteTransac
               )}
             >
               <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-slate-700 flex items-center justify-center text-xl shrink-0">
-                {tx.category.icon}
+                {tx.category?.icon ?? "↔"}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-800 dark:text-slate-100 truncate">
@@ -163,7 +163,7 @@ export function InfiniteTransactionList({ categories, wallets }: InfiniteTransac
                 <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
                   <span className="text-xs text-gray-400">{formatDate(new Date(tx.date))}</span>
                   <Badge variant={tx.type === "INCOME" ? "income" : tx.type === "EXPENSE" ? "expense" : "neutral"}>
-                    {tx.category.name}
+                    {tx.category?.name ?? "Transfer"}
                   </Badge>
                 </div>
               </div>
