@@ -26,6 +26,7 @@ model User {
   categories   Category[]
   budgets      Budget[]
   wallets      Wallet[]
+  recurring    RecurringTransaction[]
 }
 
 model Account {
@@ -78,6 +79,7 @@ model Category {
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions Transaction[]
   budgets      Budget[]
+  recurring    RecurringTransaction[]
 }
 
 model Wallet {
@@ -95,6 +97,7 @@ model Wallet {
   user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactionsFrom Transaction[] @relation("WalletFrom")
   transactionsTo   Transaction[] @relation("WalletTo")
+  recurring        RecurringTransaction[]
 }
 
 model Transaction {
@@ -150,4 +153,44 @@ enum BudgetPeriod {
   WEEKLY
   MONTHLY
   YEARLY
+}
+
+enum RecurringFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+model ExchangeRate {
+  id        String   @id @default(cuid())
+  from      String   // e.g. "USD"
+  to        String   // e.g. "IDR"
+  rate      Decimal  @db.Decimal(20, 6)
+  updatedAt DateTime @updatedAt
+
+  @@unique([from, to])
+}
+
+model RecurringTransaction {
+  id          String             @id @default(cuid())
+  amount      Decimal            @db.Decimal(15, 2)
+  type        TransactionType
+  description String
+  note        String?
+  frequency   RecurringFrequency
+  startDate   DateTime
+  endDate     DateTime?
+  lastRunAt   DateTime?
+  nextRunAt   DateTime
+  isActive    Boolean            @default(true)
+  userId      String
+  categoryId  String?
+  walletId    String
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category Category? @relation(fields: [categoryId], references: [id])
+  wallet   Wallet    @relation(fields: [walletId], references: [id])
 }

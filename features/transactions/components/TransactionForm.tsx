@@ -78,6 +78,10 @@ export function TransactionForm({ open, onClose, categories, wallets, transactio
 
     if (result.success) {
       showToast.success(isEdit ? "Transaksi berhasil diperbarui" : "Transaksi berhasil ditambahkan");
+      // Check budget alerts after creating expense
+      if (!isEdit && watch("type") === "EXPENSE") {
+        fetch("/api/notifications/budget", { method: "POST" }).catch(() => {});
+      }
       onClose();
     } else {
       setServerError(result.error ?? "Terjadi kesalahan");

@@ -16,6 +16,7 @@ import { DailySpendChart } from "@/features/reports/components/DailySpendChart";
 import { Card } from "@/components/ui";
 import { ExportButton } from "@/features/reports/components/ExportButton";
 import { PrintButton } from "@/features/reports/components/PrintButton";
+import { CurrencyConverter } from "@/components/shared/CurrencyConverter";
 import { formatCurrency, parseDecimal } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
@@ -69,7 +70,7 @@ export function ReportsClient({ transactions }: ReportsClientProps) {
           >
             <ChevronLeft className="w-4 h-4 text-gray-500" />
           </button>
-          <span className="text-sm font-medium text-gray-700 px-2 min-w-30 text-center">
+          <span className="text-sm font-medium text-gray-700 px-2 min-w-[120px] text-center">
             {monthLabel}
           </span>
           <button
@@ -123,6 +124,13 @@ export function ReportsClient({ transactions }: ReportsClientProps) {
         <CategoryBreakdown data={incomeReport} type="INCOME" />
       </div>
 
+      {/* Currency converter */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-1">
+          <CurrencyConverter />
+        </div>
+      </div>
+
       {/* Summary table */}
       {monthTxs.length > 0 && (
         <Card>
@@ -145,7 +153,7 @@ export function ReportsClient({ transactions }: ReportsClientProps) {
                     <td className="py-2.5 text-xs text-gray-400">
                       {format(new Date(tx.date), "d MMM")}
                     </td>
-                    <td className="py-2.5 text-gray-700 max-w-45 truncate pr-4">
+                    <td className="py-2.5 text-gray-700 max-w-[180px] truncate pr-4">
                       {tx.description}
                     </td>
                     <td className="py-2.5 hidden sm:table-cell">

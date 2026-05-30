@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard, ArrowLeftRight, Wallet, PiggyBank, Tag, BarChart2, X,
+  LayoutDashboard, ArrowLeftRight, Wallet, PiggyBank, Tag, BarChart2, X, RefreshCw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { APP_NAME } from "@/config/app";
 
 const ICONS = {
-  LayoutDashboard, ArrowLeftRight, Wallet, PiggyBank, Tag, BarChart2,
+  LayoutDashboard, ArrowLeftRight, Wallet, PiggyBank, Tag, BarChart2, RefreshCw,
 } as const;
 
 const NAV = [
@@ -17,6 +17,7 @@ const NAV = [
   { href: "/transactions", label: "Transaksi", icon: "ArrowLeftRight" },
   { href: "/wallets", label: "Dompet", icon: "Wallet" },
   { href: "/budgets", label: "Anggaran", icon: "PiggyBank" },
+  { href: "/recurring", label: "Berulang", icon: "RefreshCw" },
   { href: "/categories", label: "Kategori", icon: "Tag" },
   { href: "/reports", label: "Laporan", icon: "BarChart2" },
 ] as const;
@@ -30,14 +31,14 @@ export function Sidebar({ onClose, mobile }: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className={cn("flex flex-col h-full bg-white border-r border-gray-100", mobile ? "w-full" : "w-64")}>
+    <aside className={cn("flex flex-col h-full bg-white dark:bg-slate-800 border-r border-gray-100 dark:border-slate-700", mobile ? "w-full" : "w-64")}>
       {/* Logo */}
       <div className="flex items-center justify-between px-5 py-5 border-b border-gray-100">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 bg-emerald-500 rounded-xl flex items-center justify-center shadow-sm shadow-emerald-500/30">
             <span className="text-base">💰</span>
           </div>
-          <span className="font-bold text-gray-900 text-lg tracking-tight">{APP_NAME}</span>
+          <span className="font-bold text-gray-900 dark:text-slate-100 text-lg tracking-tight">{APP_NAME}</span>
         </div>
         {mobile && (
           <button onClick={onClose} className="p-1.5 hover:bg-gray-100 rounded-lg">
@@ -59,8 +60,8 @@ export function Sidebar({ onClose, mobile }: SidebarProps) {
               className={cn(
                 "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all",
                 active
-                  ? "bg-emerald-50 text-emerald-700"
-                  : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                  ? "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400"
+                  : "text-gray-500 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-slate-100 dark:text-slate-100"
               )}
             >
               <Icon className={cn("w-4.5 h-4.5 shrink-0", active ? "text-emerald-600" : "text-gray-400")} />
